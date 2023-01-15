@@ -9,7 +9,7 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
-import { UnitType } from '@/product/entities/product.entity';
+import { UnitType } from '../entities';
 
 export class CreateProductDto {
   @IsString()

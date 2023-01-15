@@ -7,6 +7,8 @@ import {
 import { FastifyReply } from 'fastify';
 import { TypeORMError } from 'typeorm';
 
+import { capitalize } from '@/helpers/capitalize.helper';
+
 @Catch(TypeORMError)
 export class DatabaseExceptionFilter implements ExceptionFilter {
   catch(exception: TypeORMError, host: ArgumentsHost) {
@@ -18,9 +20,7 @@ export class DatabaseExceptionFilter implements ExceptionFilter {
         httpStatus = HttpStatus.CONFLICT;
         const table = exception['table'];
         if (table && table.trim()) {
-          message = `${table.charAt(0).toUpperCase()}${table.slice(
-            1,
-          )} is already present`;
+          message = `${capitalize(table)} is already present`;
         }
         break;
     }
@@ -31,7 +31,7 @@ export class DatabaseExceptionFilter implements ExceptionFilter {
     return res.status(httpStatus).send({
       statusCode: httpStatus,
       message,
-      error: HttpStatus[httpStatus].toLowerCase(),
+      error: capitalize(HttpStatus[httpStatus].toLowerCase()),
     });
   }
 }

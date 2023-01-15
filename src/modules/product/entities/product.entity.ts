@@ -25,7 +25,7 @@ export class Product {
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column({ type: 'varchar', length: 16 })
+  @Column({ type: 'varchar', length: 16, unique: true })
   sku: string;
 
   @Column({ type: 'text' })
@@ -52,7 +52,7 @@ export class Product {
   @Column({ type: 'decimal' })
   weight: number;
 
-  @Column({ type: 'varchar', length: 16 })
+  @Column({ type: 'varchar', length: 16, unique: true })
   ean: string;
 
   @Column({ type: 'bool', default: true })

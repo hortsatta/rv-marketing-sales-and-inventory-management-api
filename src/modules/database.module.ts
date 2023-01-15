@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-import { Product } from './product/entities/product.entity';
+import { Product } from './product/entities';
 
 @Module({
   imports: [

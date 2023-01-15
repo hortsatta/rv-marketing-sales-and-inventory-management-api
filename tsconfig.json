@@ -20,7 +20,10 @@
     "paths": {
       "@/*": ["src/*"],
       "@/product/*": ["src/modules/product/*"],
-      "@/filters/*": ["src/common/filters/*"]
+      "@/filters": ["src/common/filters"],
+      "@/filters/*": ["src/common/filters/*"],
+      "@/interceptors": ["src/common/interceptors"],
+      "@/interceptors/*": ["src/common/interceptors/*"]
     }
   }
 }

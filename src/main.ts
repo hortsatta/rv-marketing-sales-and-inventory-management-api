@@ -5,7 +5,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 
-import { DatabaseExceptionFilter } from './common/filters/database-exception.filter';
+import { DatabaseExceptionFilter } from './common/filters';
 import { AppModule } from './modules/app.module';
 
 async function bootstrap() {
