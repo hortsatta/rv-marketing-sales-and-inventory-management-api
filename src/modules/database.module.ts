@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { Product } from './product/entities/product.entity';
 
@@ -9,20 +10,14 @@ import { Product } from './product/entities/product.entity';
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        // Load postgres databse for production, otherwise use sqlite
-        ...(process.env.NODE_ENV === 'production'
-          ? {
-              type: 'postgres',
-              host: configService.get<string>('DATABASE_HOST'),
-              port: configService.get<number>('DATABASE_PORT'),
-              username: configService.get<string>('DATABASE_USERNAME'),
-              password: configService.get<string>('DATABASE_PASSWORD'),
-              database: configService.get<string>('DATABASE_NAME'),
-            }
-          : {
-              type: 'sqlite',
-              database: configService.get<string>('DATABASE_NAME'),
-            }),
+        type: 'postgres',
+        host: configService.get<string>('DATABASE_HOST'),
+        port: configService.get<number>('DATABASE_PORT'),
+        username: configService.get<string>('DATABASE_USERNAME'),
+        password: configService.get<string>('DATABASE_PASSWORD'),
+        database: configService.get<string>('DATABASE_NAME'),
+        // Use snake_case for databse column names
+        namingStrategy: new SnakeNamingStrategy(),
         entities: [Product],
         synchronize: process.env.NODE_ENV !== 'production',
       }),
