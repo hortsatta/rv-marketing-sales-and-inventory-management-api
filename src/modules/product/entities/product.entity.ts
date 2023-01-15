@@ -1,44 +1,76 @@
-import { Column, Entity, Generated, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Generated,
+  UpdateDateColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
+export enum UnitType {
+  UNITS = 'units',
+  PIECES = 'pieces',
+  PAIRS = 'pairs',
+}
 
 @Entity()
 export class Product {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
   @Column({ unique: true })
   @Generated('uuid')
   productId: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 16 })
   sku: string;
 
-  @Column()
+  @Column({ type: 'text' })
   description: string;
 
-  @Column()
+  @Column({ type: 'text', array: true })
   images: string[];
 
-  @Column()
-  unit: string;
+  @Column({ type: 'enum', enum: UnitType })
+  unit: UnitType;
 
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   brand: string;
 
-  @Column()
+  @Column({ type: 'decimal' })
   dimensionLength: number;
 
-  @Column()
+  @Column({ type: 'decimal' })
   dimensionWidth: number;
 
-  @Column()
+  @Column({ type: 'decimal' })
   dimensionHeight: number;
 
-  @Column()
+  @Column({ type: 'decimal' })
   weight: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 16 })
   ean: string;
+
+  @Column({ type: 'bool', default: true })
+  isActive: boolean;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  createAt: boolean;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  modifiedAt: boolean;
+
+  // @Column({ type: 'bool', default: true })
+  // createBy: boolean;
 }
