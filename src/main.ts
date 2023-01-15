@@ -5,6 +5,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 
+import { DatabaseExceptionFilter } from './common/filters/database-exception.filter';
 import { AppModule } from './modules/app.module';
 
 async function bootstrap() {
@@ -28,10 +29,13 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
       forbidUnknownValues: true,
       disableErrorMessages: process.env.NODE_ENV === 'production',
-      // Automatically ransform payloads to be objects typed according to their DTO classes
+      // Automatically transform payloads to be objects typed according to their DTO classes
       transform: true,
     }),
   );
+
+  // Catch database specific errors/exception
+  app.useGlobalFilters(new DatabaseExceptionFilter());
 
   await app.listen(3000);
 }

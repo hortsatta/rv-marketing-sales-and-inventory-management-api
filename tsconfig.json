@@ -19,7 +19,8 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["src/*"],
-      "@/product/*": ["src/modules/product/*"]
+      "@/product/*": ["src/modules/product/*"],
+      "@/filters/*": ["src/common/filters/*"]
     }
   }
 }
