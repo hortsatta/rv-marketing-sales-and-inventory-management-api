@@ -16,11 +16,19 @@ export class DatabaseExceptionFilter implements ExceptionFilter {
     let httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Internal server error';
     switch (exception['code']) {
+      case '22P02':
+        {
+          httpStatus = HttpStatus.NOT_FOUND;
+          message = 'Item not found';
+        }
+        break;
       case '23505':
-        httpStatus = HttpStatus.CONFLICT;
-        const table = exception['table'];
-        if (table && table.trim()) {
-          message = `${capitalize(table)} is already present`;
+        {
+          httpStatus = HttpStatus.CONFLICT;
+          const table = exception['table'];
+          if (table && table.trim()) {
+            message = `${capitalize(table)} is already present`;
+          }
         }
         break;
     }
