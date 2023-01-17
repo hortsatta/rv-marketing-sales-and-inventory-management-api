@@ -13,6 +13,35 @@ export class ProductService {
     return this.repo.find({ where: { isActive: true } });
   }
 
+  async findOne(
+    id: string,
+    exclude?: string[],
+    include?: string[],
+  ): Promise<Product> {
+    if (exclude?.length) {
+      const product = await this.repo.findOneBy({ id });
+      const filteredProduct = Object.keys(product)
+        .filter((key) => !exclude.includes(key))
+        .reduce((obj, key) => {
+          return {
+            ...obj,
+            [key]: product[key],
+          };
+        }, {});
+
+      return filteredProduct as Product;
+    }
+
+    if (include?.length) {
+      return this.repo.findOne({
+        select: include.reduce((a, v) => ({ ...a, [v]: true }), {}),
+        where: { id },
+      });
+    }
+
+    return this.repo.findOneBy({ id });
+  }
+
   async create(productDto: CreateProductDto): Promise<Product> {
     const product = this.repo.create(productDto);
     return this.repo.save(product);
