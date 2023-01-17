@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ColumnNumericTransformer } from '@/common/transformers';
 
 export enum UnitType {
   UNITS = 'units',
@@ -16,11 +17,11 @@ export enum UnitType {
 @Entity()
 export class Product {
   @PrimaryGeneratedColumn({ type: 'bigint' })
-  id: number;
+  pId: number;
 
   @Column({ unique: true })
   @Generated('uuid')
-  productId: string;
+  id: string;
 
   @Column({ type: 'varchar', length: 255 })
   name: string;
@@ -40,16 +41,32 @@ export class Product {
   @Column({ type: 'varchar', length: 255 })
   brand: string;
 
-  @Column({ type: 'decimal' })
+  @Column('numeric', {
+    precision: 12,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+  })
   dimensionLength: number;
 
-  @Column({ type: 'decimal' })
+  @Column('numeric', {
+    precision: 12,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+  })
   dimensionWidth: number;
 
-  @Column({ type: 'decimal' })
+  @Column('numeric', {
+    precision: 12,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+  })
   dimensionHeight: number;
 
-  @Column({ type: 'decimal' })
+  @Column('numeric', {
+    precision: 12,
+    scale: 2,
+    transformer: new ColumnNumericTransformer(),
+  })
   weight: number;
 
   @Column({ type: 'varchar', length: 16, unique: true })

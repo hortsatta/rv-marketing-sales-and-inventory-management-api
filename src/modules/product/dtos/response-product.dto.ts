@@ -2,7 +2,6 @@ import { Expose, Transform } from 'class-transformer';
 import { Product, UnitType } from '../entities';
 
 export class ResponseProductDto {
-  @Transform(({ obj }: { obj: Product }) => obj.productId)
   @Expose()
   id: string;
 
@@ -25,19 +24,15 @@ export class ResponseProductDto {
   brand: string;
 
   @Expose()
-  @Transform(({ obj }: { obj: Product }) => +obj.dimensionLength)
   dimensionLength: number;
 
   @Expose()
-  @Transform(({ obj }: { obj: Product }) => +obj.dimensionWidth)
   dimensionWidth: number;
 
   @Expose()
-  @Transform(({ obj }: { obj: Product }) => +obj.dimensionHeight)
   dimensionHeight: number;
 
   @Expose()
-  @Transform(({ obj }: { obj: Product }) => +obj.weight)
   weight: number;
 
   @Expose()
