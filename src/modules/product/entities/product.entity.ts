@@ -62,14 +62,14 @@ export class Product {
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
-  createAt: boolean;
+  createdAt: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
-  modifiedAt: boolean;
+  modifiedAt: Date;
 
   // @Column({ type: 'bool', default: true })
   // createBy: boolean;
