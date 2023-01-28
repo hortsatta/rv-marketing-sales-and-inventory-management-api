@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-import { Product } from './product/entities';
+import { Product, ProductUnit } from './product/entities';
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { Product } from './product/entities';
         database: configService.get<string>('DATABASE_NAME'),
         // Use snake_case for databse column names
         namingStrategy: new SnakeNamingStrategy(),
-        entities: [Product],
+        entities: [Product, ProductUnit],
         synchronize: process.env.NODE_ENV !== 'production',
       }),
     }),

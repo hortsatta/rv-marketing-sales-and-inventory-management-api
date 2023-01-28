@@ -1,15 +1,14 @@
 import {
   IsBoolean,
-  IsEnum,
   IsNumber,
   IsOptional,
   IsPositive,
   IsString,
+  IsUUID,
   MaxLength,
   Min,
   MinLength,
 } from 'class-validator';
-import { UnitType } from '../entities';
 
 export class CreateProductDto {
   @IsString()
@@ -28,8 +27,8 @@ export class CreateProductDto {
   @IsString({ each: true })
   images: string[];
 
-  @IsEnum(UnitType)
-  unit: UnitType;
+  @IsUUID()
+  unit: string;
 
   @IsString()
   @MaxLength(255)

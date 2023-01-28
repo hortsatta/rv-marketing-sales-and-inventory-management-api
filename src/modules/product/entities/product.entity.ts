@@ -1,28 +1,11 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  Generated,
-  UpdateDateColumn,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { ColumnNumericTransformer } from '@/common/transformers';
 
-export enum UnitType {
-  UNITS = 'units',
-  PIECES = 'pieces',
-  PAIRS = 'pairs',
-}
+import { Base as BaseEntity } from '@/common/entities';
+import { ProductUnit } from './product-unit.entity';
 
 @Entity()
-export class Product {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
-  pId: number;
-
-  @Column({ unique: true })
-  @Generated('uuid')
-  id: string;
-
+export class Product extends BaseEntity {
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
@@ -35,8 +18,9 @@ export class Product {
   @Column({ type: 'text', array: true })
   images: string[];
 
-  @Column({ type: 'enum', enum: UnitType })
-  unit: UnitType;
+  @OneToOne(() => ProductUnit, { eager: true })
+  @JoinColumn()
+  unit: ProductUnit;
 
   @Column({ type: 'varchar', length: 255 })
   brand: string;
@@ -71,23 +55,4 @@ export class Product {
 
   @Column({ type: 'varchar', length: 16, unique: true })
   ean: string;
-
-  @Column({ type: 'bool', default: true })
-  isActive: boolean;
-
-  @CreateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-  })
-  createdAt: Date;
-
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-    onUpdate: 'CURRENT_TIMESTAMP(6)',
-  })
-  modifiedAt: Date;
-
-  // @Column({ type: 'bool', default: true })
-  // createBy: boolean;
 }

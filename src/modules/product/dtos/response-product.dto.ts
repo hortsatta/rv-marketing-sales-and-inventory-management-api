@@ -1,10 +1,8 @@
 import { Expose, Transform } from 'class-transformer';
-import { Product, UnitType } from '../entities';
+import { ResponseBaseDto } from '@/common/dtos';
+import { ResponseProductUnitDto } from './response-product-unit.dto';
 
-export class ResponseProductDto {
-  @Expose()
-  id: string;
-
+export class ResponseProductDto extends ResponseBaseDto {
   @Expose()
   name: string;
 
@@ -18,7 +16,8 @@ export class ResponseProductDto {
   images: string[];
 
   @Expose()
-  unit: UnitType;
+  @Transform(({ obj: { unit } }) => ({ id: unit.id, name: unit.name }))
+  unit: ResponseProductUnitDto;
 
   @Expose()
   brand: string;
@@ -37,10 +36,4 @@ export class ResponseProductDto {
 
   @Expose()
   ean: string;
-
-  @Expose()
-  createdAt: string;
-
-  @Expose()
-  modifiedAt: string;
 }
