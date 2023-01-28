@@ -1,5 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
-import { ResponseBaseDto } from '@/common/dtos';
+import { ResponseBaseDto } from '@/common/dtos/response-base.dto';
 import { ResponseProductUnitDto } from './response-product-unit.dto';
 
 export class ResponseProductDto extends ResponseBaseDto {

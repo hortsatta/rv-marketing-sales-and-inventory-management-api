@@ -4,11 +4,16 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { contentParser } from 'fastify-multer';
 
-import { DatabaseExceptionFilter } from './common/filters';
+import { createDirectory } from './common/helpers';
+import { DatabaseExceptionFilter } from './common/filters/database-exception.filter';
 import { AppModule } from './modules/app.module';
 
 async function bootstrap() {
+  // create upload directory
+  createDirectory('uploads/images', 'upload directory created!');
+
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
@@ -37,6 +42,7 @@ async function bootstrap() {
   // Catch database specific errors/exception
   app.useGlobalFilters(new DatabaseExceptionFilter());
 
+  await app.register(contentParser);
   await app.listen(3000);
 }
 bootstrap();

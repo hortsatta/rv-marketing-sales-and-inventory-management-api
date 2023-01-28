@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
-import { ColumnNumericTransformer } from '@/common/transformers';
+import { ColumnNumericTransformer } from '@/common/transformers/column-numeric.transformer';
 
-import { Base as BaseEntity } from '@/common/entities';
+import { Base as BaseEntity } from '@/common/entities/base.entity';
 import { ProductUnit } from './product-unit.entity';
 
 @Entity()
