@@ -6,25 +6,27 @@ export class FilterFieldsInterceptor implements NestInterceptor {
   intercept(ctx: ExecutionContext, handler: CallHandler): Observable<any> {
     return handler.handle().pipe(
       map((data: any) => {
-        const req = ctx.switchToHttp().getRequest<FastifyRequest>();
-        const { exclude, include } = req.query as any;
-        const excludeFields = exclude?.split(',');
-        const includeFields = include?.split(',');
+        if (data) {
+          const req = ctx.switchToHttp().getRequest<FastifyRequest>();
+          const { exclude, include } = req.query as any;
+          const excludeFields = exclude?.split(',');
+          const includeFields = include?.split(',');
 
-        if (excludeFields?.length) {
-          const filteredData = Array.isArray(data)
-            ? data.map((item) => this.filter(item, excludeFields, true))
-            : this.filter(data, excludeFields, true);
+          if (excludeFields?.length) {
+            const filteredData = Array.isArray(data)
+              ? data.map((item) => this.filter(item, excludeFields, true))
+              : this.filter(data, excludeFields, true);
 
-          return filteredData;
-        }
+            return filteredData;
+          }
 
-        if (includeFields?.length) {
-          const filteredData = Array.isArray(data)
-            ? data.map((item) => this.filter(item, includeFields, false))
-            : this.filter(data, includeFields, false);
+          if (includeFields?.length) {
+            const filteredData = Array.isArray(data)
+              ? data.map((item) => this.filter(item, includeFields, false))
+              : this.filter(data, includeFields, false);
 
-          return filteredData;
+            return filteredData;
+          }
         }
 
         return data;
