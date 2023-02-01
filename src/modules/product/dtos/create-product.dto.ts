@@ -21,36 +21,44 @@ export class CreateProductDto {
   @MaxLength(16)
   sku: string;
 
-  @IsString()
-  description: string;
-
-  @IsString({ each: true })
-  images: string[];
-
   @IsUUID()
   unit: string;
 
   @IsString()
+  @IsOptional()
+  description: string;
+
+  @IsString({ each: true })
+  @IsOptional()
+  images: string[];
+
+  @IsString()
   @MaxLength(255)
+  @IsOptional()
   brand: string;
 
   @IsPositive()
+  @IsOptional()
   dimensionLength: number;
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
+  @IsOptional()
   dimensionWidth: number;
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
+  @IsOptional()
   dimensionHeight: number;
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
+  @IsOptional()
   weight: number;
 
   @IsString()
   @MaxLength(16)
+  @IsOptional()
   ean: string;
 
   @IsBoolean()

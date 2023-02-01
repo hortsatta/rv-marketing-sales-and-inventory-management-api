@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { ColumnNumericTransformer } from '@/common/transformers/column-numeric.transformer';
 
 import { Base as BaseEntity } from '@/common/entities/base.entity';
@@ -12,23 +12,26 @@ export class Product extends BaseEntity {
   @Column({ type: 'varchar', length: 16, unique: true })
   sku: string;
 
-  @Column({ type: 'text' })
-  description: string;
-
-  @Column({ type: 'text', array: true })
-  images: string[];
-
-  @OneToOne(() => ProductUnit, { eager: true })
+  @ManyToOne(() => ProductUnit, (productUnit) => productUnit.products, {
+    eager: true,
+  })
   @JoinColumn()
   unit: ProductUnit;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'text', nullable: true })
+  description: string;
+
+  @Column({ type: 'text', array: true, default: [] })
+  images: string[];
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
   brand: string;
 
   @Column('numeric', {
     precision: 12,
     scale: 2,
     transformer: new ColumnNumericTransformer(),
+    nullable: true,
   })
   dimensionLength: number;
 
@@ -36,6 +39,7 @@ export class Product extends BaseEntity {
     precision: 12,
     scale: 2,
     transformer: new ColumnNumericTransformer(),
+    nullable: true,
   })
   dimensionWidth: number;
 
@@ -43,6 +47,7 @@ export class Product extends BaseEntity {
     precision: 12,
     scale: 2,
     transformer: new ColumnNumericTransformer(),
+    nullable: true,
   })
   dimensionHeight: number;
 
@@ -50,9 +55,10 @@ export class Product extends BaseEntity {
     precision: 12,
     scale: 2,
     transformer: new ColumnNumericTransformer(),
+    nullable: true,
   })
   weight: number;
 
-  @Column({ type: 'varchar', length: 16, unique: true })
+  @Column({ type: 'varchar', length: 16, unique: true, nullable: true })
   ean: string;
 }
