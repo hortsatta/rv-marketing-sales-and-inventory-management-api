@@ -14,28 +14,34 @@ export class UploadService {
     options: UploadFileOptionsDto,
   ) {
     const { baseName, folderName } = options || {};
-    const currentDate = new Intl.DateTimeFormat('sv-SE').format(new Date());
+    const [currentDate] = new Date().toISOString().replace(/-/g, '').split('T');
     let dir = BASE_PATH;
-    // create directory if it doesn't exist
+    // Create directory if it doesn't exist
     if (folderName) {
-      dir = `${BASE_PATH}/${folderName}`;
+      dir = `${BASE_PATH}/images/${folderName}`;
       createDirectory(dir);
     }
 
-    await Promise.all(
-      files.map(async (value, index) => {
-        const fileName = `${baseName || value.originalname}-${currentDate}-${
-          index + 1
-        }`;
+    // Sequential file upload
+    let uploaded = [];
+    for (const [index, value] of files.entries()) {
+      const fileName = `${baseName ? baseName + '-' : ''}${currentDate}${String(
+        index + 1,
+      ).padStart(2, '0')}`;
 
-        await sharp(value.buffer)
-          .resize(null, MAX_HEIGHT, {
-            fit: sharp.fit.inside,
-            withoutEnlargement: true,
-          })
-          .toFormat('avif')
-          .toFile(`${dir}/${fileName}.avif`);
-      }),
-    );
+      const filePath = `${dir}/${fileName}.avif`;
+
+      await sharp(value.buffer)
+        .resize(null, MAX_HEIGHT, {
+          fit: sharp.fit.inside,
+          withoutEnlargement: true,
+        })
+        .toFormat('avif')
+        .toFile(filePath);
+
+      uploaded.push(filePath.substring(2));
+    }
+
+    return uploaded;
   }
 }

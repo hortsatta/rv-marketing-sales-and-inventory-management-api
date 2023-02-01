@@ -28,11 +28,10 @@ export class UploadController {
     @Body() body: UploadFileOptionsDto,
   ): Promise<string[]> {
     try {
-      await this.uploadService.uploadImages(files, body);
+      const uploaded = await this.uploadService.uploadImages(files, body);
+      return uploaded;
     } catch (error) {
-      console.log(error);
       throw new InternalServerErrorException('an error has occured');
     }
-    return ['x'];
   }
 }
