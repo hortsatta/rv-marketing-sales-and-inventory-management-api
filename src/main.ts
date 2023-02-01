@@ -41,6 +41,8 @@ async function bootstrap() {
 
   // Catch database specific errors/exception
   app.useGlobalFilters(new DatabaseExceptionFilter());
+  // Enable cors
+  app.enableCors();
 
   await app.register(contentParser);
   await app.listen(3000);
