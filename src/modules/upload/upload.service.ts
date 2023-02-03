@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import sharp from 'sharp';
+import sharp, { FitEnum, FormatEnum } from 'sharp';
 
 import { createDirectory } from '@/common/helpers';
 import { UploadFileOptionsDto } from './dtos/upload-file-options.dto';
 
-const MAX_HEIGHT = 1080;
-const BASE_PATH = './uploads';
+const BASE_PATH = './public/uploads';
+const RESIZE_SET = [
+  { width: null, height: 1080, fit: sharp.fit.inside },
+  { width: null, height: 80, fit: sharp.fit.inside, outSuffix: '-thumb' },
+];
 
 @Injectable()
 export class UploadService {
@@ -29,19 +32,46 @@ export class UploadService {
         index + 1,
       ).padStart(2, '0')}`;
 
-      const filePath = `${dir}/${fileName}.avif`;
+      const out = `${dir}/${fileName}`;
 
-      await sharp(value.buffer)
-        .resize(null, MAX_HEIGHT, {
-          fit: sharp.fit.inside,
-          withoutEnlargement: true,
-        })
-        .toFormat('avif')
-        .toFile(filePath);
+      await Promise.all(
+        RESIZE_SET.map((size) =>
+          this.resize(
+            value.buffer,
+            size.width,
+            size.height,
+            size.fit,
+            'avif',
+            out,
+            size.outSuffix,
+          ),
+        ),
+      );
 
-      uploaded.push(filePath.substring(2));
+      uploaded.push(`${out}.avif`.substring(2));
     }
 
     return uploaded;
+  }
+
+  resize(
+    input: Buffer,
+    width: number | null,
+    height: number | null,
+    fit: keyof FitEnum,
+    format: keyof FormatEnum,
+    out: string,
+    outSuffix: string,
+  ) {
+    const fileOut = outSuffix
+      ? `${out}${outSuffix}.${format}`
+      : `${out}.${format}`;
+    return sharp(input)
+      .resize(width, height, {
+        fit,
+        withoutEnlargement: true,
+      })
+      .toFormat(format)
+      .toFile(fileOut);
   }
 }
