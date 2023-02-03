@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
@@ -12,13 +13,18 @@ import { AppModule } from './modules/app.module';
 
 async function bootstrap() {
   // create upload directory
-  createDirectory('uploads/images', 'upload directory created!');
+  createDirectory('public/uploads/images', 'upload directory created!');
 
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
   );
 
+  // Serve static files
+  app.useStaticAssets({
+    root: join(__dirname, '..', 'public'),
+    prefix: '/public',
+  });
   // Append api prefix to your base url
   app.setGlobalPrefix('api');
   // Enable versioning on this api
