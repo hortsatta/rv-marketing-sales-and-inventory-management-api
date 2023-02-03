@@ -4,6 +4,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  Patch,
   Post,
   UseInterceptors,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import {
   CreateProductUnitDto,
   ResponseProductDto,
   ResponseProductUnitDto,
+  UpdateProductDto,
 } from './dtos';
 import { Product, ProductUnit } from './entities';
 import { ProductService } from './product.service';
@@ -33,11 +35,11 @@ export class ProductController {
     return this.productService.findAll();
   }
 
-  @Get('/:id')
+  @Get('/:sku')
   @UseInterceptors(FilterFieldsInterceptor)
   @Serialize(ResponseProductDto)
-  async findOne(@Param('id') id: string): Promise<Product> {
-    const product = await this.productService.findOne(id);
+  async findOne(@Param('sku') sku: string): Promise<Product> {
+    const product = await this.productService.findOneBySku(sku);
 
     if (!product) {
       throw new NotFoundException('Product not found');
@@ -52,6 +54,16 @@ export class ProductController {
     return this.productService.create(body);
   }
 
+  @Patch('/:id')
+  @Serialize(ResponseProductDto)
+  update(
+    @Param('id') id: string,
+    @Body() body: UpdateProductDto,
+  ): Promise<Product> {
+    return this.productService.update(id, body);
+  }
+
+  // Product unit
   @Get('/units')
   @UseInterceptors(FilterFieldsInterceptor)
   @Serialize(ResponseProductUnitDto)
@@ -63,7 +75,13 @@ export class ProductController {
   @UseInterceptors(FilterFieldsInterceptor)
   @Serialize(ResponseProductUnitDto)
   async findOneProductUnit(@Param('id') id: string): Promise<ProductUnit> {
-    return this.productUnitService.findOne(id);
+    const productUnit = this.productUnitService.findOneById(id);
+
+    if (!productUnit) {
+      throw new NotFoundException('Unit not found');
+    }
+
+    return productUnit;
   }
 
   @Post('/units')

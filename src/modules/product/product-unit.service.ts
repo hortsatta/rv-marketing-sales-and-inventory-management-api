@@ -15,7 +15,7 @@ export class ProductUnitService {
     return this.repo.find({ where: { isActive: true } });
   }
 
-  findOne(id: string): Promise<ProductUnit> {
+  findOneById(id: string): Promise<ProductUnit> {
     return this.repo.findOneBy({ id });
   }
 
