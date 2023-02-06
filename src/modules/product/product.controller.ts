@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseInterceptors,
 } from '@nestjs/common';
 
@@ -29,15 +30,15 @@ export class ProductController {
   ) {}
 
   @Get()
-  @UseInterceptors(FilterFieldsInterceptor)
   @Serialize(ResponseProductDto)
-  findAll(): Promise<Product[]> {
-    return this.productService.findAll();
+  @UseInterceptors(FilterFieldsInterceptor)
+  findAll(@Query('q') q: string): Promise<Product[]> {
+    return this.productService.findAll(q);
   }
 
   @Get('/:sku')
-  @UseInterceptors(FilterFieldsInterceptor)
   @Serialize(ResponseProductDto)
+  @UseInterceptors(FilterFieldsInterceptor)
   async findOne(@Param('sku') sku: string): Promise<Product> {
     const product = await this.productService.findOneBySku(sku);
 
@@ -65,15 +66,15 @@ export class ProductController {
 
   // Product unit
   @Get('/units')
-  @UseInterceptors(FilterFieldsInterceptor)
   @Serialize(ResponseProductUnitDto)
+  @UseInterceptors(FilterFieldsInterceptor)
   findAllProductUnits(): Promise<ProductUnit[]> {
     return this.productUnitService.findAll();
   }
 
   @Get('/units/:id')
-  @UseInterceptors(FilterFieldsInterceptor)
   @Serialize(ResponseProductUnitDto)
+  @UseInterceptors(FilterFieldsInterceptor)
   async findOneProductUnit(@Param('id') id: string): Promise<ProductUnit> {
     const productUnit = this.productUnitService.findOneById(id);
 

@@ -16,7 +16,9 @@ export class ResponseProductDto extends ResponseBaseDto {
   images: string[];
 
   @Expose()
-  @Transform(({ obj: { unit } }) => ({ id: unit.id, name: unit.name }))
+  @Transform(({ obj: { unit } }) =>
+    unit ? { id: unit.id, name: unit.name } : null,
+  )
   unit: ResponseProductUnitDto;
 
   @Expose()

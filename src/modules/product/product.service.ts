@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 
 import { Product } from './entities';
 import { CreateProductDto, UpdateProductDto } from './dtos';
@@ -13,16 +13,53 @@ export class ProductService {
     private readonly productUnitService: ProductUnitService,
   ) {}
 
-  findAll(): Promise<Product[]> {
-    return this.repo.find({ where: { isActive: true } });
+  async findAll(q?: string): Promise<Product[]> {
+    let products = [];
+    if (q) {
+      const formattedQuery = q.trim().replace(/ /g, ' | ');
+      products = await this.repo
+        .createQueryBuilder('product')
+        .leftJoinAndSelect('product.unit', 'productUnit')
+        .where({ isActive: true })
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where('to_tsvector(product.name) @@ to_tsquery(:query)', {
+              query: `${formattedQuery}:*`,
+            })
+              .orWhere('to_tsvector(product.sku) @@ to_tsquery(:query)', {
+                query: `${formattedQuery}:*`,
+              })
+              .orWhere('to_tsvector(product.brand) @@ to_tsquery(:query)', {
+                query: `${formattedQuery}:*`,
+              })
+              .orWhere('to_tsvector(product.ean) @@ to_tsquery(:query)', {
+                query: `${formattedQuery}:*`,
+              });
+          }),
+        )
+        .getMany();
+    } else {
+      products = await this.repo.find({ where: { isActive: true } });
+    }
+
+    // Return images as an array with single image for thumbnail
+    return products.map((p) => {
+      if (p.images.length > 1) {
+        return {
+          ...p,
+          images: [p.images[0]],
+        };
+      }
+      return p;
+    });
   }
 
   findOneById(id: string): Promise<Product> {
-    return this.repo.findOneBy({ id });
+    return this.repo.findOne({ where: { id, isActive: true } });
   }
 
   findOneBySku(sku: string): Promise<Product> {
-    return this.repo.findOneBy({ sku });
+    return this.repo.findOne({ where: { sku, isActive: true } });
   }
 
   async create(productDto: CreateProductDto): Promise<Product> {
